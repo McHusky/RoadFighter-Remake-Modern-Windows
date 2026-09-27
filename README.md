@@ -28,7 +28,7 @@ This project keeps the original game logic and 512×384 software rendering intac
 
 The ready-to-play Windows package is in [`release/`](release/).
 
-1. Download and extract `RoadFighter-Modern-Windows-v1.0.0.zip`.
+1. Download and extract `RoadFighter.zip`.
 2. Do **not** run it from inside the ZIP file.
 3. Start the resolution you want:
    - `START - 1920x1080.cmd`
