@@ -15,14 +15,11 @@ This project keeps the original game logic and 512×384 software rendering intac
   - 3840×2160
   - 5120×1440
 - Correct 4:3 aspect ratio with centered pillarboxing instead of image stretching
-- Reliable Alt+Tab focus, input and audio behavior
-- Flicker-free GDI backbuffer presentation
 - Audio buffer increased from 2048 to 4096 samples to reduce short crackles/underruns
 - Default master volume reduced to **30%** of the original level
 - Runtime volume control:
   - **F9** – volume down by 5 percentage points
   - **F10** – volume up by 5 percentage points
-- No SDL2/SDL3 compatibility layer required; the game continues to use its original SDL 1.2-era runtime
 
 ## Download / Run
 
