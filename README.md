@@ -49,33 +49,13 @@ That means 16:9 and 32:9 displays use black side bars rather than stretching the
 
 These are original in-game assets included with the remake, provided here as a quick visual preview:
 
-<p align="center">
-  <img src="screenshots/title-artwork.jpg" alt="Road Fighter Remake title artwork" width="640">
-</p>
+| ![Alt text](/screenshots/title-artwork.jpg?raw=true "Title Artwork") | ![Alt text](/screenshots/game-map.png?raw=true "Game Map") |
+| -------------------------------- |:-----------------------------------------:|
 
-<p align="center">
-  <img src="screenshots/game-map.png" alt="Road Fighter Remake game map" width="640">
-</p>
+### Screenshots
 
-### Real screenshots
-
-The README is ready for actual captures from the patched Windows build. Add these files to `screenshots/` and uncomment the image block below:
-
-- main-menu.png
-- gameplay1.png
-- gameplay2.png
-- gameplay3.png
-
-<!--
-<p align="center">
-  <img src="screenshots/menu.png" alt="Road Fighter modern Windows menu" width="45%">
-  <img src="screenshots/gameplay.png" alt="Road Fighter modern Windows gameplay" width="45%">
-</p>
-
-<p align="center">
-  <img src="screenshots/ultrawide.png" alt="Road Fighter on an ultrawide display" width="90%">
-</p>
--->
+| ![Alt text](/screenshots/main-menu.png?raw=true "Main Menu") | ![Alt text](/screenshots/gameplay1.png?raw=true "Gameplay 1") | ![Alt text](/screenshots/gameplay2.png?raw=true "Gameplay 2") | ![Alt text](/screenshots/gameplay3.png?raw=true "Gameplay 3") |
+| :--- | :---: | ---: | --- |
 
 ## The OGs ❤️
 
