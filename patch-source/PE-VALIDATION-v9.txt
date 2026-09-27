@@ -1,0 +1,50 @@
+RoadFighter Direct Patch v9 validation
+UTC 2026-09-27T21:02:49Z
+
+Injected code:
+1752 /mnt/data/rf_v9_work/rf_patch_v9.bin
+6153888a1ecfc1be58ebb67c82fe7c026007a784c175090efac22958f8b51820  /mnt/data/rf_v9_work/rf_patch_v9.bin
+
+Executables:
+fa6b92fa5fd6d47a1aa995462524b59e4d4c2d998b551dc8f62e010c3c534224  /mnt/data/rf_v9_package/RoadFighter-DirectPatch-v9/RoadFighter-1920x1080.exe
+e16f2a190618ab1afb7c6daf62f0a7cf86be89147fcc6bf347ba88b51f222aa0  /mnt/data/rf_v9_package/RoadFighter-DirectPatch-v9/RoadFighter-2160x1440.exe
+6b08cdb9ea4b0e4165ceb04a83ecbbf8c4023460a04d6932419d217fd5cb5640  /mnt/data/rf_v9_package/RoadFighter-DirectPatch-v9/RoadFighter-3840x2160.exe
+b4def39f834aad7b599729eac866928670b0803498adcda8d47cec1d9e4dad19  /mnt/data/rf_v9_package/RoadFighter-DirectPatch-v9/RoadFighter-5120x1440.exe
+
+PE sections (1920x1080):
+
+/mnt/data/rf_v9_package/RoadFighter-DirectPatch-v9/RoadFighter-1920x1080.exe:     file format pei-i386
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         0002e000  00401000  00401000  00001000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .rdata        0000500d  0042f000  0042f000  0002f000  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  2 .data         00004000  00435000  00435000  00035000  2**2
+                  CONTENTS, ALLOC, LOAD, DATA
+  3 .rfdata       00001000  0043b000  0043b000  00039000  2**2
+                  CONTENTS, ALLOC, LOAD, DATA
+
+Audio-hook disassembly marker:
+
+/mnt/data/rf_v9_package/RoadFighter-DirectPatch-v9/RoadFighter-1920x1080.exe:     file format pei-i386
+
+
+Disassembly of section .text:
+
+0042e3d3 <.text+0x2d3d3>:
+  42e3d3:	55                   	push   ebp
+  42e3d4:	89 e5                	mov    ebp,esp
+  42e3d6:	53                   	push   ebx
+  42e3d7:	56                   	push   esi
+  42e3d8:	57                   	push   edi
+  42e3d9:	68 00 10 00 00       	push   0x1000
+  42e3de:	ff 75 10             	push   DWORD PTR [ebp+0x10]
+  42e3e1:	ff 75 0c             	push   DWORD PTR [ebp+0xc]
+  42e3e4:	ff 75 08             	push   DWORD PTR [ebp+0x8]
+  42e3e7:	ff 15 b4 f1 42 00    	call   DWORD PTR ds:0x42f1b4
+  42e3ed:	83 c4 10             	add    esp,0x10
+  42e3f0:	89 c3                	mov    ebx,eax
+  42e3f2:	85 c0                	test   eax,eax
+  42e3f4:	75                   	.byte 0x75

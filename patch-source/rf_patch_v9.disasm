@@ -1,0 +1,690 @@
+
+/mnt/data/rf_v9_work/rf_patch_v9.elf:     file format elf32-i386
+
+
+Disassembly of section .text:
+
+0042e200 <rf_setvideomode>:
+  42e200:	55                   	push   ebp
+  42e201:	89 e5                	mov    ebp,esp
+  42e203:	53                   	push   ebx
+  42e204:	56                   	push   esi
+  42e205:	57                   	push   edi
+  42e206:	83 3d 00 b0 43 00 01 	cmp    DWORD PTR ds:0x43b000,0x1
+  42e20d:	74 05                	je     42e214 <.sv_api_checked>
+  42e20f:	e8 00 04 00 00       	call   42e614 <init_winapi>
+
+0042e214 <.sv_api_checked>:
+  42e214:	83 3d 04 b0 43 00 01 	cmp    DWORD PTR ds:0x43b004,0x1
+  42e21b:	74 15                	je     42e232 <.sv_call_sdl>
+  42e21d:	c7 05 04 b0 43 00 01 	mov    DWORD PTR ds:0x43b004,0x1
+  42e224:	00 00 00 
+  42e227:	a1 3c b0 43 00       	mov    eax,ds:0x43b03c
+  42e22c:	85 c0                	test   eax,eax
+  42e22e:	74 02                	je     42e232 <.sv_call_sdl>
+  42e230:	ff d0                	call   eax
+
+0042e232 <.sv_call_sdl>:
+  42e232:	8b 45 14             	mov    eax,DWORD PTR [ebp+0x14]
+  42e235:	25 ff ff ff 7f       	and    eax,0x7fffffff
+  42e23a:	83 c8 20             	or     eax,0x20
+  42e23d:	50                   	push   eax
+  42e23e:	6a 20                	push   0x20
+  42e240:	68 80 01 00 00       	push   0x180
+  42e245:	68 00 02 00 00       	push   0x200
+  42e24a:	ff 15 2c f1 42 00    	call   DWORD PTR ds:0x42f12c
+  42e250:	83 c4 10             	add    esp,0x10
+  42e253:	89 c6                	mov    esi,eax
+  42e255:	85 f6                	test   esi,esi
+  42e257:	74 56                	je     42e2af <.sv_done>
+  42e259:	89 35 0c b0 43 00    	mov    DWORD PTR ds:0x43b00c,esi
+  42e25f:	83 3d 00 b0 43 00 01 	cmp    DWORD PTR ds:0x43b000,0x1
+  42e266:	75 47                	jne    42e2af <.sv_done>
+  42e268:	ff 15 28 b0 43 00    	call   DWORD PTR ds:0x43b028
+  42e26e:	a3 08 b0 43 00       	mov    ds:0x43b008,eax
+  42e273:	85 c0                	test   eax,eax
+  42e275:	74 38                	je     42e2af <.sv_done>
+  42e277:	68 00 00 00 90       	push   0x90000000
+  42e27c:	6a f0                	push   0xfffffff0
+  42e27e:	50                   	push   eax
+  42e27f:	ff 15 2c b0 43 00    	call   DWORD PTR ds:0x43b02c
+  42e285:	6a 60                	push   0x60
+  42e287:	ff 35 14 b0 43 00    	push   DWORD PTR ds:0x43b014
+  42e28d:	ff 35 10 b0 43 00    	push   DWORD PTR ds:0x43b010
+  42e293:	6a 00                	push   0x0
+  42e295:	6a 00                	push   0x0
+  42e297:	6a 00                	push   0x0
+  42e299:	ff 35 08 b0 43 00    	push   DWORD PTR ds:0x43b008
+  42e29f:	ff 15 30 b0 43 00    	call   DWORD PTR ds:0x43b030
+  42e2a5:	e8 b8 04 00 00       	call   42e762 <calc_dest_rect>
+  42e2aa:	e8 c8 02 00 00       	call   42e577 <setup_backbuffer>
+
+0042e2af <.sv_done>:
+  42e2af:	89 f0                	mov    eax,esi
+  42e2b1:	5f                   	pop    edi
+  42e2b2:	5e                   	pop    esi
+  42e2b3:	5b                   	pop    ebx
+  42e2b4:	5d                   	pop    ebp
+  42e2b5:	c3                   	ret
+
+0042e2b6 <rf_flip>:
+  42e2b6:	55                   	push   ebp
+  42e2b7:	89 e5                	mov    ebp,esp
+  42e2b9:	53                   	push   ebx
+  42e2ba:	56                   	push   esi
+  42e2bb:	57                   	push   edi
+  42e2bc:	8b 75 08             	mov    esi,DWORD PTR [ebp+0x8]
+  42e2bf:	85 f6                	test   esi,esi
+  42e2c1:	0f 84 f6 00 00 00    	je     42e3bd <.flip_fail>
+  42e2c7:	83 3d 00 b0 43 00 01 	cmp    DWORD PTR ds:0x43b000,0x1
+  42e2ce:	0f 85 f0 00 00 00    	jne    42e3c4 <.flip_fallback>
+  42e2d4:	83 3d 08 b0 43 00 00 	cmp    DWORD PTR ds:0x43b008,0x0
+  42e2db:	0f 84 e3 00 00 00    	je     42e3c4 <.flip_fallback>
+  42e2e1:	83 3d 48 b0 43 00 00 	cmp    DWORD PTR ds:0x43b048,0x0
+  42e2e8:	0f 84 d6 00 00 00    	je     42e3c4 <.flip_fallback>
+  42e2ee:	56                   	push   esi
+  42e2ef:	ff 15 6c f1 42 00    	call   DWORD PTR ds:0x42f16c
+  42e2f5:	83 c4 04             	add    esp,0x4
+  42e2f8:	85 c0                	test   eax,eax
+  42e2fa:	0f 85 bd 00 00 00    	jne    42e3bd <.flip_fail>
+  42e300:	6a 42                	push   0x42
+  42e302:	ff 35 14 b0 43 00    	push   DWORD PTR ds:0x43b014
+  42e308:	ff 35 10 b0 43 00    	push   DWORD PTR ds:0x43b010
+  42e30e:	6a 00                	push   0x0
+  42e310:	6a 00                	push   0x0
+  42e312:	ff 35 48 b0 43 00    	push   DWORD PTR ds:0x43b048
+  42e318:	ff 15 40 b0 43 00    	call   DWORD PTR ds:0x43b040
+  42e31e:	68 20 00 cc 00       	push   0xcc0020
+  42e323:	6a 00                	push   0x0
+  42e325:	68 dc e7 42 00       	push   0x42e7dc
+  42e32a:	8b 46 14             	mov    eax,DWORD PTR [esi+0x14]
+  42e32d:	50                   	push   eax
+  42e32e:	68 80 01 00 00       	push   0x180
+  42e333:	68 00 02 00 00       	push   0x200
+  42e338:	6a 00                	push   0x0
+  42e33a:	6a 00                	push   0x0
+  42e33c:	ff 35 24 b0 43 00    	push   DWORD PTR ds:0x43b024
+  42e342:	ff 35 20 b0 43 00    	push   DWORD PTR ds:0x43b020
+  42e348:	ff 35 1c b0 43 00    	push   DWORD PTR ds:0x43b01c
+  42e34e:	ff 35 18 b0 43 00    	push   DWORD PTR ds:0x43b018
+  42e354:	ff 35 48 b0 43 00    	push   DWORD PTR ds:0x43b048
+  42e35a:	ff 15 44 b0 43 00    	call   DWORD PTR ds:0x43b044
+  42e360:	ff 35 08 b0 43 00    	push   DWORD PTR ds:0x43b008
+  42e366:	ff 15 34 b0 43 00    	call   DWORD PTR ds:0x43b034
+  42e36c:	89 c7                	mov    edi,eax
+  42e36e:	85 ff                	test   edi,edi
+  42e370:	74 41                	je     42e3b3 <.flip_unlock_fail>
+  42e372:	68 20 00 cc 00       	push   0xcc0020
+  42e377:	6a 00                	push   0x0
+  42e379:	6a 00                	push   0x0
+  42e37b:	ff 35 48 b0 43 00    	push   DWORD PTR ds:0x43b048
+  42e381:	ff 35 14 b0 43 00    	push   DWORD PTR ds:0x43b014
+  42e387:	ff 35 10 b0 43 00    	push   DWORD PTR ds:0x43b010
+  42e38d:	6a 00                	push   0x0
+  42e38f:	6a 00                	push   0x0
+  42e391:	57                   	push   edi
+  42e392:	ff 15 60 b0 43 00    	call   DWORD PTR ds:0x43b060
+  42e398:	57                   	push   edi
+  42e399:	ff 35 08 b0 43 00    	push   DWORD PTR ds:0x43b008
+  42e39f:	ff 15 38 b0 43 00    	call   DWORD PTR ds:0x43b038
+  42e3a5:	56                   	push   esi
+  42e3a6:	ff 15 70 f1 42 00    	call   DWORD PTR ds:0x42f170
+  42e3ac:	83 c4 04             	add    esp,0x4
+  42e3af:	31 c0                	xor    eax,eax
+  42e3b1:	eb 1b                	jmp    42e3ce <.flip_done>
+
+0042e3b3 <.flip_unlock_fail>:
+  42e3b3:	56                   	push   esi
+  42e3b4:	ff 15 70 f1 42 00    	call   DWORD PTR ds:0x42f170
+  42e3ba:	83 c4 04             	add    esp,0x4
+
+0042e3bd <.flip_fail>:
+  42e3bd:	b8 ff ff ff ff       	mov    eax,0xffffffff
+  42e3c2:	eb 0a                	jmp    42e3ce <.flip_done>
+
+0042e3c4 <.flip_fallback>:
+  42e3c4:	56                   	push   esi
+  42e3c5:	ff 15 18 f1 42 00    	call   DWORD PTR ds:0x42f118
+  42e3cb:	83 c4 04             	add    esp,0x4
+
+0042e3ce <.flip_done>:
+  42e3ce:	5f                   	pop    edi
+  42e3cf:	5e                   	pop    esi
+  42e3d0:	5b                   	pop    ebx
+  42e3d1:	5d                   	pop    ebp
+  42e3d2:	c3                   	ret
+
+0042e3d3 <rf_open_audio>:
+  42e3d3:	55                   	push   ebp
+  42e3d4:	89 e5                	mov    ebp,esp
+  42e3d6:	53                   	push   ebx
+  42e3d7:	56                   	push   esi
+  42e3d8:	57                   	push   edi
+  42e3d9:	68 00 10 00 00       	push   0x1000
+  42e3de:	ff 75 10             	push   DWORD PTR [ebp+0x10]
+  42e3e1:	ff 75 0c             	push   DWORD PTR [ebp+0xc]
+  42e3e4:	ff 75 08             	push   DWORD PTR [ebp+0x8]
+  42e3e7:	ff 15 b4 f1 42 00    	call   DWORD PTR ds:0x42f1b4
+  42e3ed:	83 c4 10             	add    esp,0x10
+  42e3f0:	89 c3                	mov    ebx,eax
+  42e3f2:	85 c0                	test   eax,eax
+  42e3f4:	75 30                	jne    42e426 <.oa_done>
+  42e3f6:	83 3d 6c b0 43 00 00 	cmp    DWORD PTR ds:0x43b06c,0x0
+  42e3fd:	75 22                	jne    42e421 <.oa_apply>
+  42e3ff:	68 bf e8 42 00       	push   0x42e8bf
+  42e404:	ff 15 b0 f0 42 00    	call   DWORD PTR ds:0x42f0b0
+  42e40a:	89 c6                	mov    esi,eax
+  42e40c:	85 f6                	test   esi,esi
+  42e40e:	74 16                	je     42e426 <.oa_done>
+  42e410:	68 cd e8 42 00       	push   0x42e8cd
+  42e415:	56                   	push   esi
+  42e416:	ff 15 64 f0 42 00    	call   DWORD PTR ds:0x42f064
+  42e41c:	a3 6c b0 43 00       	mov    ds:0x43b06c,eax
+
+0042e421 <.oa_apply>:
+  42e421:	e8 a1 00 00 00       	call   42e4c7 <apply_channel_volume>
+
+0042e426 <.oa_done>:
+  42e426:	89 d8                	mov    eax,ebx
+  42e428:	5f                   	pop    edi
+  42e429:	5e                   	pop    esi
+  42e42a:	5b                   	pop    ebx
+  42e42b:	5d                   	pop    ebp
+  42e42c:	c3                   	ret
+
+0042e42d <rf_hook_music>:
+  42e42d:	55                   	push   ebp
+  42e42e:	89 e5                	mov    ebp,esp
+  42e430:	8b 45 08             	mov    eax,DWORD PTR [ebp+0x8]
+  42e433:	85 c0                	test   eax,eax
+  42e435:	74 1f                	je     42e456 <.hm_disable>
+  42e437:	a3 70 b0 43 00       	mov    ds:0x43b070,eax
+  42e43c:	8b 45 0c             	mov    eax,DWORD PTR [ebp+0xc]
+  42e43f:	a3 74 b0 43 00       	mov    ds:0x43b074,eax
+  42e444:	6a 00                	push   0x0
+  42e446:	68 7a e4 42 00       	push   0x42e47a
+  42e44b:	ff 15 bc f1 42 00    	call   DWORD PTR ds:0x42f1bc
+  42e451:	83 c4 08             	add    esp,0x8
+  42e454:	5d                   	pop    ebp
+  42e455:	c3                   	ret
+
+0042e456 <.hm_disable>:
+  42e456:	c7 05 70 b0 43 00 00 	mov    DWORD PTR ds:0x43b070,0x0
+  42e45d:	00 00 00 
+  42e460:	c7 05 74 b0 43 00 00 	mov    DWORD PTR ds:0x43b074,0x0
+  42e467:	00 00 00 
+  42e46a:	ff 75 0c             	push   DWORD PTR [ebp+0xc]
+  42e46d:	6a 00                	push   0x0
+  42e46f:	ff 15 bc f1 42 00    	call   DWORD PTR ds:0x42f1bc
+  42e475:	83 c4 08             	add    esp,0x8
+  42e478:	5d                   	pop    ebp
+  42e479:	c3                   	ret
+
+0042e47a <rf_music_premix>:
+  42e47a:	55                   	push   ebp
+  42e47b:	89 e5                	mov    ebp,esp
+  42e47d:	50                   	push   eax
+  42e47e:	51                   	push   ecx
+  42e47f:	52                   	push   edx
+  42e480:	56                   	push   esi
+  42e481:	57                   	push   edi
+  42e482:	a1 70 b0 43 00       	mov    eax,ds:0x43b070
+  42e487:	85 c0                	test   eax,eax
+  42e489:	74 35                	je     42e4c0 <.mp_done>
+  42e48b:	ff 75 10             	push   DWORD PTR [ebp+0x10]
+  42e48e:	ff 75 0c             	push   DWORD PTR [ebp+0xc]
+  42e491:	ff 35 74 b0 43 00    	push   DWORD PTR ds:0x43b074
+  42e497:	ff d0                	call   eax
+  42e499:	83 c4 0c             	add    esp,0xc
+  42e49c:	8b 7d 0c             	mov    edi,DWORD PTR [ebp+0xc]
+  42e49f:	8b 4d 10             	mov    ecx,DWORD PTR [ebp+0x10]
+  42e4a2:	d1 e9                	shr    ecx,1
+  42e4a4:	8b 35 68 b0 43 00    	mov    esi,DWORD PTR ds:0x43b068
+  42e4aa:	85 c9                	test   ecx,ecx
+  42e4ac:	74 12                	je     42e4c0 <.mp_done>
+
+0042e4ae <.mp_loop>:
+  42e4ae:	0f bf 07             	movsx  eax,WORD PTR [edi]
+  42e4b1:	0f af c6             	imul   eax,esi
+  42e4b4:	c1 f8 08             	sar    eax,0x8
+  42e4b7:	66 89 07             	mov    WORD PTR [edi],ax
+  42e4ba:	83 c7 02             	add    edi,0x2
+  42e4bd:	49                   	dec    ecx
+  42e4be:	75 ee                	jne    42e4ae <.mp_loop>
+
+0042e4c0 <.mp_done>:
+  42e4c0:	5f                   	pop    edi
+  42e4c1:	5e                   	pop    esi
+  42e4c2:	5a                   	pop    edx
+  42e4c3:	59                   	pop    ecx
+  42e4c4:	58                   	pop    eax
+  42e4c5:	5d                   	pop    ebp
+  42e4c6:	c3                   	ret
+
+0042e4c7 <apply_channel_volume>:
+  42e4c7:	50                   	push   eax
+  42e4c8:	51                   	push   ecx
+  42e4c9:	52                   	push   edx
+  42e4ca:	8b 15 6c b0 43 00    	mov    edx,DWORD PTR ds:0x43b06c
+  42e4d0:	85 d2                	test   edx,edx
+  42e4d2:	74 23                	je     42e4f7 <.cv_done>
+  42e4d4:	a1 64 b0 43 00       	mov    eax,ds:0x43b064
+  42e4d9:	69 c0 80 00 00 00    	imul   eax,eax,0x80
+  42e4df:	83 c0 32             	add    eax,0x32
+  42e4e2:	31 d2                	xor    edx,edx
+  42e4e4:	b9 64 00 00 00       	mov    ecx,0x64
+  42e4e9:	f7 f1                	div    ecx
+  42e4eb:	50                   	push   eax
+  42e4ec:	6a ff                	push   0xffffffff
+  42e4ee:	ff 15 6c b0 43 00    	call   DWORD PTR ds:0x43b06c
+  42e4f4:	83 c4 08             	add    esp,0x8
+
+0042e4f7 <.cv_done>:
+  42e4f7:	5a                   	pop    edx
+  42e4f8:	59                   	pop    ecx
+  42e4f9:	58                   	pop    eax
+  42e4fa:	c3                   	ret
+
+0042e4fb <rf_poll_event>:
+  42e4fb:	55                   	push   ebp
+  42e4fc:	89 e5                	mov    ebp,esp
+  42e4fe:	53                   	push   ebx
+  42e4ff:	56                   	push   esi
+  42e500:	57                   	push   edi
+  42e501:	ff 75 08             	push   DWORD PTR [ebp+0x8]
+  42e504:	ff 15 04 f1 42 00    	call   DWORD PTR ds:0x42f104
+  42e50a:	83 c4 04             	add    esp,0x4
+  42e50d:	89 c3                	mov    ebx,eax
+  42e50f:	85 c0                	test   eax,eax
+  42e511:	74 5d                	je     42e570 <.pe_done>
+  42e513:	8b 75 08             	mov    esi,DWORD PTR [ebp+0x8]
+  42e516:	85 f6                	test   esi,esi
+  42e518:	74 56                	je     42e570 <.pe_done>
+  42e51a:	80 3e 02             	cmp    BYTE PTR [esi],0x2
+  42e51d:	75 51                	jne    42e570 <.pe_done>
+  42e51f:	8b 46 08             	mov    eax,DWORD PTR [esi+0x8]
+  42e522:	3d 22 01 00 00       	cmp    eax,0x122
+  42e527:	74 09                	je     42e532 <.pe_down>
+  42e529:	3d 23 01 00 00       	cmp    eax,0x123
+  42e52e:	74 10                	je     42e540 <.pe_up>
+  42e530:	eb 3e                	jmp    42e570 <.pe_done>
+
+0042e532 <.pe_down>:
+  42e532:	a1 64 b0 43 00       	mov    eax,ds:0x43b064
+  42e537:	83 e8 05             	sub    eax,0x5
+  42e53a:	79 16                	jns    42e552 <.pe_store>
+  42e53c:	31 c0                	xor    eax,eax
+  42e53e:	eb 12                	jmp    42e552 <.pe_store>
+
+0042e540 <.pe_up>:
+  42e540:	a1 64 b0 43 00       	mov    eax,ds:0x43b064
+  42e545:	83 c0 05             	add    eax,0x5
+  42e548:	83 f8 64             	cmp    eax,0x64
+  42e54b:	7e 05                	jle    42e552 <.pe_store>
+  42e54d:	b8 64 00 00 00       	mov    eax,0x64
+
+0042e552 <.pe_store>:
+  42e552:	a3 64 b0 43 00       	mov    ds:0x43b064,eax
+  42e557:	c1 e0 08             	shl    eax,0x8
+  42e55a:	83 c0 32             	add    eax,0x32
+  42e55d:	31 d2                	xor    edx,edx
+  42e55f:	b9 64 00 00 00       	mov    ecx,0x64
+  42e564:	f7 f1                	div    ecx
+  42e566:	a3 68 b0 43 00       	mov    ds:0x43b068,eax
+  42e56b:	e8 57 ff ff ff       	call   42e4c7 <apply_channel_volume>
+
+0042e570 <.pe_done>:
+  42e570:	89 d8                	mov    eax,ebx
+  42e572:	5f                   	pop    edi
+  42e573:	5e                   	pop    esi
+  42e574:	5b                   	pop    ebx
+  42e575:	5d                   	pop    ebp
+  42e576:	c3                   	ret
+
+0042e577 <setup_backbuffer>:
+  42e577:	53                   	push   ebx
+  42e578:	56                   	push   esi
+  42e579:	57                   	push   edi
+  42e57a:	c7 05 48 b0 43 00 00 	mov    DWORD PTR ds:0x43b048,0x0
+  42e581:	00 00 00 
+  42e584:	c7 05 4c b0 43 00 00 	mov    DWORD PTR ds:0x43b04c,0x0
+  42e58b:	00 00 00 
+  42e58e:	c7 05 50 b0 43 00 00 	mov    DWORD PTR ds:0x43b050,0x0
+  42e595:	00 00 00 
+  42e598:	ff 35 08 b0 43 00    	push   DWORD PTR ds:0x43b008
+  42e59e:	ff 15 34 b0 43 00    	call   DWORD PTR ds:0x43b034
+  42e5a4:	89 c7                	mov    edi,eax
+  42e5a6:	85 ff                	test   edi,edi
+  42e5a8:	74 64                	je     42e60e <.bb_fail>
+  42e5aa:	57                   	push   edi
+  42e5ab:	ff 15 54 b0 43 00    	call   DWORD PTR ds:0x43b054
+  42e5b1:	89 c6                	mov    esi,eax
+  42e5b3:	85 f6                	test   esi,esi
+  42e5b5:	74 4a                	je     42e601 <.bb_release_fail>
+  42e5b7:	ff 35 14 b0 43 00    	push   DWORD PTR ds:0x43b014
+  42e5bd:	ff 35 10 b0 43 00    	push   DWORD PTR ds:0x43b010
+  42e5c3:	57                   	push   edi
+  42e5c4:	ff 15 58 b0 43 00    	call   DWORD PTR ds:0x43b058
+  42e5ca:	89 c3                	mov    ebx,eax
+  42e5cc:	85 db                	test   ebx,ebx
+  42e5ce:	74 31                	je     42e601 <.bb_release_fail>
+  42e5d0:	53                   	push   ebx
+  42e5d1:	56                   	push   esi
+  42e5d2:	ff 15 5c b0 43 00    	call   DWORD PTR ds:0x43b05c
+  42e5d8:	85 c0                	test   eax,eax
+  42e5da:	74 25                	je     42e601 <.bb_release_fail>
+  42e5dc:	89 35 48 b0 43 00    	mov    DWORD PTR ds:0x43b048,esi
+  42e5e2:	89 1d 4c b0 43 00    	mov    DWORD PTR ds:0x43b04c,ebx
+  42e5e8:	a3 50 b0 43 00       	mov    ds:0x43b050,eax
+  42e5ed:	57                   	push   edi
+  42e5ee:	ff 35 08 b0 43 00    	push   DWORD PTR ds:0x43b008
+  42e5f4:	ff 15 38 b0 43 00    	call   DWORD PTR ds:0x43b038
+  42e5fa:	b8 01 00 00 00       	mov    eax,0x1
+  42e5ff:	eb 0f                	jmp    42e610 <.bb_done>
+
+0042e601 <.bb_release_fail>:
+  42e601:	57                   	push   edi
+  42e602:	ff 35 08 b0 43 00    	push   DWORD PTR ds:0x43b008
+  42e608:	ff 15 38 b0 43 00    	call   DWORD PTR ds:0x43b038
+
+0042e60e <.bb_fail>:
+  42e60e:	31 c0                	xor    eax,eax
+
+0042e610 <.bb_done>:
+  42e610:	5f                   	pop    edi
+  42e611:	5e                   	pop    esi
+  42e612:	5b                   	pop    ebx
+  42e613:	c3                   	ret
+
+0042e614 <init_winapi>:
+  42e614:	53                   	push   ebx
+  42e615:	56                   	push   esi
+  42e616:	68 08 e8 42 00       	push   0x42e808
+  42e61b:	ff 15 b0 f0 42 00    	call   DWORD PTR ds:0x42f0b0
+  42e621:	89 c6                	mov    esi,eax
+  42e623:	85 f6                	test   esi,esi
+  42e625:	0f 84 32 01 00 00    	je     42e75d <.api_fail>
+  42e62b:	68 1d e8 42 00       	push   0x42e81d
+  42e630:	56                   	push   esi
+  42e631:	ff 15 64 f0 42 00    	call   DWORD PTR ds:0x42f064
+  42e637:	a3 28 b0 43 00       	mov    ds:0x43b028,eax
+  42e63c:	85 c0                	test   eax,eax
+  42e63e:	0f 84 19 01 00 00    	je     42e75d <.api_fail>
+  42e644:	68 2d e8 42 00       	push   0x42e82d
+  42e649:	56                   	push   esi
+  42e64a:	ff 15 64 f0 42 00    	call   DWORD PTR ds:0x42f064
+  42e650:	a3 2c b0 43 00       	mov    ds:0x43b02c,eax
+  42e655:	85 c0                	test   eax,eax
+  42e657:	0f 84 00 01 00 00    	je     42e75d <.api_fail>
+  42e65d:	68 3c e8 42 00       	push   0x42e83c
+  42e662:	56                   	push   esi
+  42e663:	ff 15 64 f0 42 00    	call   DWORD PTR ds:0x42f064
+  42e669:	a3 30 b0 43 00       	mov    ds:0x43b030,eax
+  42e66e:	85 c0                	test   eax,eax
+  42e670:	0f 84 e7 00 00 00    	je     42e75d <.api_fail>
+  42e676:	68 49 e8 42 00       	push   0x42e849
+  42e67b:	56                   	push   esi
+  42e67c:	ff 15 64 f0 42 00    	call   DWORD PTR ds:0x42f064
+  42e682:	a3 34 b0 43 00       	mov    ds:0x43b034,eax
+  42e687:	85 c0                	test   eax,eax
+  42e689:	0f 84 ce 00 00 00    	je     42e75d <.api_fail>
+  42e68f:	68 4f e8 42 00       	push   0x42e84f
+  42e694:	56                   	push   esi
+  42e695:	ff 15 64 f0 42 00    	call   DWORD PTR ds:0x42f064
+  42e69b:	a3 38 b0 43 00       	mov    ds:0x43b038,eax
+  42e6a0:	85 c0                	test   eax,eax
+  42e6a2:	0f 84 b5 00 00 00    	je     42e75d <.api_fail>
+  42e6a8:	68 59 e8 42 00       	push   0x42e859
+  42e6ad:	56                   	push   esi
+  42e6ae:	ff 15 64 f0 42 00    	call   DWORD PTR ds:0x42f064
+  42e6b4:	a3 3c b0 43 00       	mov    ds:0x43b03c,eax
+  42e6b9:	68 13 e8 42 00       	push   0x42e813
+  42e6be:	ff 15 b0 f0 42 00    	call   DWORD PTR ds:0x42f0b0
+  42e6c4:	89 c3                	mov    ebx,eax
+  42e6c6:	85 db                	test   ebx,ebx
+  42e6c8:	0f 84 8f 00 00 00    	je     42e75d <.api_fail>
+  42e6ce:	68 6c e8 42 00       	push   0x42e86c
+  42e6d3:	53                   	push   ebx
+  42e6d4:	ff 15 64 f0 42 00    	call   DWORD PTR ds:0x42f064
+  42e6da:	a3 40 b0 43 00       	mov    ds:0x43b040,eax
+  42e6df:	85 c0                	test   eax,eax
+  42e6e1:	74 7a                	je     42e75d <.api_fail>
+  42e6e3:	68 73 e8 42 00       	push   0x42e873
+  42e6e8:	53                   	push   ebx
+  42e6e9:	ff 15 64 f0 42 00    	call   DWORD PTR ds:0x42f064
+  42e6ef:	a3 44 b0 43 00       	mov    ds:0x43b044,eax
+  42e6f4:	85 c0                	test   eax,eax
+  42e6f6:	74 65                	je     42e75d <.api_fail>
+  42e6f8:	68 81 e8 42 00       	push   0x42e881
+  42e6fd:	53                   	push   ebx
+  42e6fe:	ff 15 64 f0 42 00    	call   DWORD PTR ds:0x42f064
+  42e704:	a3 54 b0 43 00       	mov    ds:0x43b054,eax
+  42e709:	85 c0                	test   eax,eax
+  42e70b:	74 50                	je     42e75d <.api_fail>
+  42e70d:	68 94 e8 42 00       	push   0x42e894
+  42e712:	53                   	push   ebx
+  42e713:	ff 15 64 f0 42 00    	call   DWORD PTR ds:0x42f064
+  42e719:	a3 58 b0 43 00       	mov    ds:0x43b058,eax
+  42e71e:	85 c0                	test   eax,eax
+  42e720:	74 3b                	je     42e75d <.api_fail>
+  42e722:	68 ab e8 42 00       	push   0x42e8ab
+  42e727:	53                   	push   ebx
+  42e728:	ff 15 64 f0 42 00    	call   DWORD PTR ds:0x42f064
+  42e72e:	a3 5c b0 43 00       	mov    ds:0x43b05c,eax
+  42e733:	85 c0                	test   eax,eax
+  42e735:	74 26                	je     42e75d <.api_fail>
+  42e737:	68 b8 e8 42 00       	push   0x42e8b8
+  42e73c:	53                   	push   ebx
+  42e73d:	ff 15 64 f0 42 00    	call   DWORD PTR ds:0x42f064
+  42e743:	a3 60 b0 43 00       	mov    ds:0x43b060,eax
+  42e748:	85 c0                	test   eax,eax
+  42e74a:	74 11                	je     42e75d <.api_fail>
+  42e74c:	c7 05 00 b0 43 00 01 	mov    DWORD PTR ds:0x43b000,0x1
+  42e753:	00 00 00 
+  42e756:	b8 01 00 00 00       	mov    eax,0x1
+  42e75b:	eb 02                	jmp    42e75f <.api_done>
+
+0042e75d <.api_fail>:
+  42e75d:	31 c0                	xor    eax,eax
+
+0042e75f <.api_done>:
+  42e75f:	5e                   	pop    esi
+  42e760:	5b                   	pop    ebx
+  42e761:	c3                   	ret
+
+0042e762 <calc_dest_rect>:
+  42e762:	53                   	push   ebx
+  42e763:	56                   	push   esi
+  42e764:	57                   	push   edi
+  42e765:	a1 10 b0 43 00       	mov    eax,ds:0x43b010
+  42e76a:	8d 0c 40             	lea    ecx,[eax+eax*2]
+  42e76d:	8b 15 14 b0 43 00    	mov    edx,DWORD PTR ds:0x43b014
+  42e773:	89 d3                	mov    ebx,edx
+  42e775:	c1 e3 02             	shl    ebx,0x2
+  42e778:	39 d9                	cmp    ecx,ebx
+  42e77a:	7f 27                	jg     42e7a3 <.height_limited>
+  42e77c:	a3 20 b0 43 00       	mov    ds:0x43b020,eax
+  42e781:	8d 0c 40             	lea    ecx,[eax+eax*2]
+  42e784:	c1 e9 02             	shr    ecx,0x2
+  42e787:	89 0d 24 b0 43 00    	mov    DWORD PTR ds:0x43b024,ecx
+  42e78d:	c7 05 18 b0 43 00 00 	mov    DWORD PTR ds:0x43b018,0x0
+  42e794:	00 00 00 
+  42e797:	29 ca                	sub    edx,ecx
+  42e799:	d1 fa                	sar    edx,1
+  42e79b:	89 15 1c b0 43 00    	mov    DWORD PTR ds:0x43b01c,edx
+  42e7a1:	eb 33                	jmp    42e7d6 <.rect_done>
+
+0042e7a3 <.height_limited>:
+  42e7a3:	89 15 24 b0 43 00    	mov    DWORD PTR ds:0x43b024,edx
+  42e7a9:	89 d0                	mov    eax,edx
+  42e7ab:	c1 e0 02             	shl    eax,0x2
+  42e7ae:	31 d2                	xor    edx,edx
+  42e7b0:	b9 03 00 00 00       	mov    ecx,0x3
+  42e7b5:	f7 f1                	div    ecx
+  42e7b7:	a3 20 b0 43 00       	mov    ds:0x43b020,eax
+  42e7bc:	8b 0d 10 b0 43 00    	mov    ecx,DWORD PTR ds:0x43b010
+  42e7c2:	29 c1                	sub    ecx,eax
+  42e7c4:	d1 f9                	sar    ecx,1
+  42e7c6:	89 0d 18 b0 43 00    	mov    DWORD PTR ds:0x43b018,ecx
+  42e7cc:	c7 05 1c b0 43 00 00 	mov    DWORD PTR ds:0x43b01c,0x0
+  42e7d3:	00 00 00 
+
+0042e7d6 <.rect_done>:
+  42e7d6:	5f                   	pop    edi
+  42e7d7:	5e                   	pop    esi
+  42e7d8:	5b                   	pop    ebx
+  42e7d9:	c3                   	ret
+  42e7da:	66 90                	xchg   ax,ax
+
+0042e7dc <bmi>:
+  42e7dc:	28 00                	sub    BYTE PTR [eax],al
+  42e7de:	00 00                	add    BYTE PTR [eax],al
+  42e7e0:	00 02                	add    BYTE PTR [edx],al
+  42e7e2:	00 00                	add    BYTE PTR [eax],al
+  42e7e4:	80 fe ff             	cmp    dh,0xff
+  42e7e7:	ff 01                	inc    DWORD PTR [ecx]
+  42e7e9:	00 20                	add    BYTE PTR [eax],ah
+	...
+
+0042e808 <str_user32>:
+  42e808:	75 73                	jne    42e87d <str_StretchDIBits+0xa>
+  42e80a:	65 72 33             	gs jb  42e840 <str_SetWindowPos+0x4>
+  42e80d:	32 2e                	xor    ch,BYTE PTR [esi]
+  42e80f:	64 6c                	fs ins BYTE PTR es:[edi],dx
+  42e811:	6c                   	ins    BYTE PTR es:[edi],dx
+	...
+
+0042e813 <str_gdi32>:
+  42e813:	67 64 69 33 32 2e 64 	imul   esi,DWORD PTR fs:[bp+di],0x6c642e32
+  42e81a:	6c 
+  42e81b:	6c                   	ins    BYTE PTR es:[edi],dx
+	...
+
+0042e81d <str_GetActiveWindow>:
+  42e81d:	47                   	inc    edi
+  42e81e:	65 74 41             	gs je  42e862 <str_SetProcessDPIAware+0x9>
+  42e821:	63 74 69 76          	arpl   WORD PTR [ecx+ebp*2+0x76],esi
+  42e825:	65 57                	gs push edi
+  42e827:	69                   	.byte 0x69
+  42e828:	6e                   	outs   dx,BYTE PTR ds:[esi]
+  42e829:	64 6f                	outs   dx,DWORD PTR fs:[esi]
+  42e82b:	77 00                	ja     42e82d <str_SetWindowLongA>
+
+0042e82d <str_SetWindowLongA>:
+  42e82d:	53                   	push   ebx
+  42e82e:	65 74 57             	gs je  42e888 <str_CreateCompatibleDC+0x7>
+  42e831:	69 6e 64 6f 77 4c 6f 	imul   ebp,DWORD PTR [esi+0x64],0x6f4c776f
+  42e838:	6e                   	outs   dx,BYTE PTR ds:[esi]
+  42e839:	67 41                	addr16 inc ecx
+	...
+
+0042e83c <str_SetWindowPos>:
+  42e83c:	53                   	push   ebx
+  42e83d:	65 74 57             	gs je  42e897 <str_CreateCompatibleBitmap+0x3>
+  42e840:	69 6e 64 6f 77 50 6f 	imul   ebp,DWORD PTR [esi+0x64],0x6f50776f
+  42e847:	73 00                	jae    42e849 <str_GetDC>
+
+0042e849 <str_GetDC>:
+  42e849:	47                   	inc    edi
+  42e84a:	65 74 44             	gs je  42e891 <str_CreateCompatibleDC+0x10>
+  42e84d:	43                   	inc    ebx
+	...
+
+0042e84f <str_ReleaseDC>:
+  42e84f:	52                   	push   edx
+  42e850:	65 6c                	gs ins BYTE PTR es:[edi],dx
+  42e852:	65 61                	gs popa
+  42e854:	73 65                	jae    42e8bb <str_BitBlt+0x3>
+  42e856:	44                   	inc    esp
+  42e857:	43                   	inc    ebx
+	...
+
+0042e859 <str_SetProcessDPIAware>:
+  42e859:	53                   	push   ebx
+  42e85a:	65 74 50             	gs je  42e8ad <str_SelectObject+0x2>
+  42e85d:	72 6f                	jb     42e8ce <str_Mix_Volume+0x1>
+  42e85f:	63 65 73             	arpl   WORD PTR [ebp+0x73],esp
+  42e862:	73 44                	jae    42e8a8 <str_CreateCompatibleBitmap+0x14>
+  42e864:	50                   	push   eax
+  42e865:	49                   	dec    ecx
+  42e866:	41                   	inc    ecx
+  42e867:	77 61                	ja     42e8ca <str_sdl_mixer+0xb>
+  42e869:	72 65                	jb     42e8d0 <str_Mix_Volume+0x3>
+	...
+
+0042e86c <str_PatBlt>:
+  42e86c:	50                   	push   eax
+  42e86d:	61                   	popa
+  42e86e:	74 42                	je     42e8b2 <str_SelectObject+0x7>
+  42e870:	6c                   	ins    BYTE PTR es:[edi],dx
+  42e871:	74 00                	je     42e873 <str_StretchDIBits>
+
+0042e873 <str_StretchDIBits>:
+  42e873:	53                   	push   ebx
+  42e874:	74 72                	je     42e8e8 <str_Mix_Volume+0x1b>
+  42e876:	65 74 63             	gs je  42e8dc <str_Mix_Volume+0xf>
+  42e879:	68 44 49 42 69       	push   0x69424944
+  42e87e:	74 73                	je     42e8f3 <str_Mix_Volume+0x26>
+	...
+
+0042e881 <str_CreateCompatibleDC>:
+  42e881:	43                   	inc    ebx
+  42e882:	72 65                	jb     42e8e9 <str_Mix_Volume+0x1c>
+  42e884:	61                   	popa
+  42e885:	74 65                	je     42e8ec <str_Mix_Volume+0x1f>
+  42e887:	43                   	inc    ebx
+  42e888:	6f                   	outs   dx,DWORD PTR ds:[esi]
+  42e889:	6d                   	ins    DWORD PTR es:[edi],dx
+  42e88a:	70 61                	jo     42e8ed <str_Mix_Volume+0x20>
+  42e88c:	74 69                	je     42e8f7 <str_Mix_Volume+0x2a>
+  42e88e:	62 6c 65 44          	bound  ebp,QWORD PTR [ebp+eiz*2+0x44]
+  42e892:	43                   	inc    ebx
+	...
+
+0042e894 <str_CreateCompatibleBitmap>:
+  42e894:	43                   	inc    ebx
+  42e895:	72 65                	jb     42e8fc <str_Mix_Volume+0x2f>
+  42e897:	61                   	popa
+  42e898:	74 65                	je     42e8ff <str_Mix_Volume+0x32>
+  42e89a:	43                   	inc    ebx
+  42e89b:	6f                   	outs   dx,DWORD PTR ds:[esi]
+  42e89c:	6d                   	ins    DWORD PTR es:[edi],dx
+  42e89d:	70 61                	jo     42e900 <str_Mix_Volume+0x33>
+  42e89f:	74 69                	je     42e90a <str_Mix_Volume+0x3d>
+  42e8a1:	62 6c 65 42          	bound  ebp,QWORD PTR [ebp+eiz*2+0x42]
+  42e8a5:	69                   	.byte 0x69
+  42e8a6:	74 6d                	je     42e915 <str_Mix_Volume+0x48>
+  42e8a8:	61                   	popa
+  42e8a9:	70 00                	jo     42e8ab <str_SelectObject>
+
+0042e8ab <str_SelectObject>:
+  42e8ab:	53                   	push   ebx
+  42e8ac:	65 6c                	gs ins BYTE PTR es:[edi],dx
+  42e8ae:	65 63 74 4f 62       	arpl   WORD PTR gs:[edi+ecx*2+0x62],esi
+  42e8b3:	6a 65                	push   0x65
+  42e8b5:	63                   	.byte 0x63
+  42e8b6:	74 00                	je     42e8b8 <str_BitBlt>
+
+0042e8b8 <str_BitBlt>:
+  42e8b8:	42                   	inc    edx
+  42e8b9:	69                   	.byte 0x69
+  42e8ba:	74 42                	je     42e8fe <str_Mix_Volume+0x31>
+  42e8bc:	6c                   	ins    BYTE PTR es:[edi],dx
+  42e8bd:	74 00                	je     42e8bf <str_sdl_mixer>
+
+0042e8bf <str_sdl_mixer>:
+  42e8bf:	53                   	push   ebx
+  42e8c0:	44                   	inc    esp
+  42e8c1:	4c                   	dec    esp
+  42e8c2:	5f                   	pop    edi
+  42e8c3:	6d                   	ins    DWORD PTR es:[edi],dx
+  42e8c4:	69 78 65 72 2e 64 6c 	imul   edi,DWORD PTR [eax+0x65],0x6c642e72
+  42e8cb:	6c                   	ins    BYTE PTR es:[edi],dx
+	...
+
+0042e8cd <str_Mix_Volume>:
+  42e8cd:	4d                   	dec    ebp
+  42e8ce:	69 78 5f 56 6f 6c 75 	imul   edi,DWORD PTR [eax+0x5f],0x756c6f56
+  42e8d5:	6d                   	ins    DWORD PTR es:[edi],dx
+  42e8d6:	65                   	gs
+	...
